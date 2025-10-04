@@ -87,11 +87,7 @@ static const bool TNS_FILTERS_IS_BLACKLIST = false;
 static const int thumb_sizes[] = {32, 64, 80, 144, 192, 384, 480, 576, 768};
 
 /* thumbnail size at startup, index into thumb_sizes[]: */
-static const int THUMB_SIZE = 1;
-
-/* spacing factors for thumbnail grid */
-static const int THUMB_BORDER_MULTIPLIER = 1; /* default 2 */
-static const int THUMB_PADDING = 2;           /* default 6 */
+static const int THUMB_SIZE = 5;
 
 #endif
 #ifdef INCLUDE_MAPPINGS_CONFIG

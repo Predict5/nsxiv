@@ -1,15 +1,15 @@
 #ifdef INCLUDE_WINDOW_CONFIG
 
 /* default window dimensions (overwritten via -g option): */
-static const int WIN_WIDTH = 1600;
-static const int WIN_HEIGHT = 1600;
+static const int WIN_WIDTH = 800;
+static const int WIN_HEIGHT = 600;
 
 /* colors and font can be overwritten via X resource properties.
  * See nsxiv(1), X(7) section Resources and xrdb(1) for more information.
  *                                      X resource            value (NULL ==
  * default) */
-static const char *WIN_BG[] = {"Nsxiv.window.background", "black"};
-static const char *WIN_FG[] = {"Nsxiv.window.foreground", "white"};
+static const char *WIN_BG[] = {"Nsxiv.window.background", "white"};
+static const char *WIN_FG[] = {"Nsxiv.window.foreground", "black"};
 static const char *MARK_FG[] = {"Nsxiv.mark.foreground", NULL};
 #if HAVE_LIBFONTS
 static const char *BAR_BG[] = {"Nsxiv.bar.background", NULL};
@@ -84,10 +84,10 @@ static const bool TNS_FILTERS_IS_BLACKLIST = false;
 #ifdef INCLUDE_THUMBS_CONFIG
 
 /* thumbnail sizes in pixels (width == height): */
-static const int thumb_sizes[] = {32, 64, 80, 144, 192, 384, 480, 576, 768};
+static const int thumb_sizes[] = {32, 64, 96, 128, 160};
 
 /* thumbnail size at startup, index into thumb_sizes[]: */
-static const int THUMB_SIZE = 5;
+static const int THUMB_SIZE = 3;
 
 #endif
 #ifdef INCLUDE_MAPPINGS_CONFIG

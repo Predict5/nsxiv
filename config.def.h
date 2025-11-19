@@ -84,7 +84,7 @@ static const bool TNS_FILTERS_IS_BLACKLIST = false;
 #ifdef INCLUDE_THUMBS_CONFIG
 
 /* thumbnail sizes in pixels (width == height): */
-static const int thumb_sizes[] = {128, 160, 192, 224, 256};
+static const int thumb_sizes[] = {128, 160, 192, 224, 256, 288, 320, 384};
 
 /* thumbnail size at startup, index into thumb_sizes[]: */
 static const int THUMB_SIZE = 2;

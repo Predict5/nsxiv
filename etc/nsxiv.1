@@ -140,6 +140,10 @@ Enables checkerboard background for alpha layer, when given
 .I no
 as an argument, disables it instead.
 .TP
+.BI "\-\-thumb\-size " NUM
+Start thumbnail mode at size step NUM, an index into thumb_sizes[] in config.h
+(0 is the smallest). Overrides THUMB_SIZE.
+.TP
 .BI "\-\-cache\-allow, \-\-cache\-deny " "CACHE\-PATHS"
 List of directories to whitelist or blacklist for thumbnail caching.
 See

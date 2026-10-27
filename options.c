@@ -87,7 +87,8 @@ void parse_options(int argc, char **argv)
 		OPT_CA,
 		OPT_CD,
 		OPT_UC,
-		OPT_PICK
+		OPT_PICK,
+		OPT_TS
 	};
 	static const struct optparse_long longopts[] = {
 		{ "framerate",      'A',     OPTPARSE_REQUIRED },
@@ -123,6 +124,7 @@ void parse_options(int argc, char **argv)
 		{ "cache-deny",    OPT_CD,   OPTPARSE_REQUIRED },
 		{ "update-cache",  OPT_UC,   OPTPARSE_NONE },
 		{ "pick",         OPT_PICK,  OPTPARSE_NONE },
+		{ "thumb-size",   OPT_TS,    OPTPARSE_REQUIRED },
 		{ 0 }, /* end */
 	};
 
@@ -160,6 +162,7 @@ void parse_options(int argc, char **argv)
 	_options.tns_filters_is_blacklist = TNS_FILTERS_IS_BLACKLIST;
 	_options.quiet = false;
 	_options.thumb_mode = false;
+	_options.thumb_size = -1;
 	_options.clean_cache = false;
 	_options.update_cache = false;
 	_options.private_mode = false;
@@ -295,6 +298,12 @@ void parse_options(int argc, char **argv)
 		case OPT_PICK:
 			_options.pick_mode = true;
 			_options.to_stdout = true;
+			break;
+		case OPT_TS:
+			n = strtol(op.optarg, &end, 0);
+			if (*end != '\0' || n < 0 || n > INT_MAX)
+				error(EXIT_FAILURE, 0, "Invalid thumbnail size: %s", op.optarg);
+			_options.thumb_size = n;
 			break;
 		}
 	}

@@ -183,7 +183,7 @@ void tns_init(tns_t *tns, fileinfo_t *tns_files, const int *cnt, int *sel, win_t
 	tns->win = win;
 	tns->dirty = false;
 
-	tns->zl = THUMB_SIZE;
+	tns->zl = options->thumb_size >= 0 ? options->thumb_size : THUMB_SIZE;
 	tns_zoom(tns, 0);
 
 	tns->filters = NULL;

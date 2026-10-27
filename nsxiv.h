@@ -271,6 +271,7 @@ struct opt {
 	bool tns_filters_is_blacklist;
 	bool quiet;
 	bool thumb_mode;
+	int thumb_size;
 	bool clean_cache;
 	bool update_cache;
 	bool private_mode;

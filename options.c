@@ -86,7 +86,8 @@ void parse_options(int argc, char **argv)
 		OPT_CLASS,
 		OPT_CA,
 		OPT_CD,
-		OPT_UC
+		OPT_UC,
+		OPT_PICK
 	};
 	static const struct optparse_long longopts[] = {
 		{ "framerate",      'A',     OPTPARSE_REQUIRED },
@@ -121,6 +122,7 @@ void parse_options(int argc, char **argv)
 		{ "cache-allow",   OPT_CA,   OPTPARSE_REQUIRED },
 		{ "cache-deny",    OPT_CD,   OPTPARSE_REQUIRED },
 		{ "update-cache",  OPT_UC,   OPTPARSE_NONE },
+		{ "pick",         OPT_PICK,  OPTPARSE_NONE },
 		{ 0 }, /* end */
 	};
 
@@ -134,6 +136,7 @@ void parse_options(int argc, char **argv)
 	options = &_options;
 	_options.from_stdin = false;
 	_options.to_stdout = false;
+	_options.pick_mode = false;
 	_options.using_null = false;
 	_options.recursive = false;
 	_options.startnum = 0;
@@ -288,6 +291,10 @@ void parse_options(int argc, char **argv)
 			break;
 		case OPT_UC:
 			_options.update_cache = true;
+			break;
+		case OPT_PICK:
+			_options.pick_mode = true;
+			_options.to_stdout = true;
 			break;
 		}
 	}

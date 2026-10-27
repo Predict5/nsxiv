@@ -744,6 +744,9 @@ static void on_keypress(XKeyEvent *kev)
 		/* number prefix for commands */
 		prefix = prefix * 10 + (int)(key - '0');
 		return;
+	} else if (options->pick_mode && ksym == XK_Return && MODMASK(kev->state) == 0) {
+		/* --pick: Return acts like Q */
+		cg_pick_quit(0);
 	} else {
 		dirty = process_bindings(keys, ARRLEN(keys), ksym, kev->state, sh);
 	}

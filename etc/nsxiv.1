@@ -144,6 +144,10 @@ as an argument, disables it instead.
 Start thumbnail mode at size step NUM, an index into thumb_sizes[] in config.h
 (0 is the smallest). Overrides THUMB_SIZE.
 .TP
+.BI "\-\-thumb\-ratio " W:H
+Use thumbnail cells with aspect ratio W:H instead of square ones, e.g. 16:9 to
+remove the gaps between rows of widescreen images. Default is 1:1.
+.TP
 .BI "\-\-cache\-allow, \-\-cache\-deny " "CACHE\-PATHS"
 List of directories to whitelist or blacklist for thumbnail caching.
 See

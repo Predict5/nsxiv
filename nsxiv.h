@@ -272,6 +272,7 @@ struct opt {
 	bool quiet;
 	bool thumb_mode;
 	int thumb_size;
+	float thumb_ratio;
 	bool clean_cache;
 	bool update_cache;
 	bool private_mode;
@@ -317,6 +318,7 @@ struct tns {
 	int zl;
 	int bw;
 	int dim;
+	int dimh;
 
 	thumb_filter_t *filters;
 	int filters_cnt;

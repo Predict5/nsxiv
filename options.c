@@ -88,7 +88,8 @@ void parse_options(int argc, char **argv)
 		OPT_CD,
 		OPT_UC,
 		OPT_PICK,
-		OPT_TS
+		OPT_TS,
+		OPT_TR
 	};
 	static const struct optparse_long longopts[] = {
 		{ "framerate",      'A',     OPTPARSE_REQUIRED },
@@ -125,6 +126,7 @@ void parse_options(int argc, char **argv)
 		{ "update-cache",  OPT_UC,   OPTPARSE_NONE },
 		{ "pick",         OPT_PICK,  OPTPARSE_NONE },
 		{ "thumb-size",   OPT_TS,    OPTPARSE_REQUIRED },
+		{ "thumb-ratio",  OPT_TR,    OPTPARSE_REQUIRED },
 		{ 0 }, /* end */
 	};
 
@@ -163,6 +165,7 @@ void parse_options(int argc, char **argv)
 	_options.quiet = false;
 	_options.thumb_mode = false;
 	_options.thumb_size = -1;
+	_options.thumb_ratio = 1.0f;
 	_options.clean_cache = false;
 	_options.update_cache = false;
 	_options.private_mode = false;
@@ -305,6 +308,17 @@ void parse_options(int argc, char **argv)
 				error(EXIT_FAILURE, 0, "Invalid thumbnail size: %s", op.optarg);
 			_options.thumb_size = n;
 			break;
+		case OPT_TR: {
+			long rw, rh;
+			rw = strtol(op.optarg, &end, 10);
+			if (*end != ':' || rw <= 0)
+				error(EXIT_FAILURE, 0, "Invalid thumbnail ratio: %s", op.optarg);
+			rh = strtol(end + 1, &end, 10);
+			if (*end != '\0' || rh <= 0)
+				error(EXIT_FAILURE, 0, "Invalid thumbnail ratio: %s", op.optarg);
+			_options.thumb_ratio = (float)rh / (float)rw;
+			break;
+		}
 		}
 	}
 

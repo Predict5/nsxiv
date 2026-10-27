@@ -255,7 +255,10 @@ CLEANUP void tns_free(tns_t *tns)
 	cache_tmpfile = cache_tmpfile_base = NULL;
 }
 
-static Imlib_Image tns_scale_down(Imlib_Image im, int dim)
+/* thumbnail height for the current zoom level, see --thumb-ratio */
+#define THUMB_H(tns) MAX(1, (int)(thumb_sizes[(tns)->zl] * options->thumb_ratio))
+
+static Imlib_Image tns_scale_down(Imlib_Image im, int dimw, int dimh)
 {
 	int w, h;
 	float z, zw, zh;
@@ -263,8 +266,8 @@ static Imlib_Image tns_scale_down(Imlib_Image im, int dim)
 	imlib_context_set_image(im);
 	w = imlib_image_get_width();
 	h = imlib_image_get_height();
-	zw = (float)dim / (float)w;
-	zh = (float)dim / (float)h;
+	zw = (float)dimw / (float)w;
+	zh = (float)dimh / (float)h;
 	z = MIN(zw, zh);
 	z = MIN(z, 1.0);
 
@@ -376,7 +379,7 @@ bool tns_load(tns_t *tns, int n, bool force, bool cache_only)
 #if HAVE_LIBEXIF
 		exif_auto_orientate(file);
 #endif
-		im = tns_scale_down(im, maxwh);
+		im = tns_scale_down(im, maxwh, maxwh);
 		imlib_context_set_image(im);
 		if (imlib_image_get_width() == maxwh || imlib_image_get_height() == maxwh)
 			tns_cache_write(tns, im, file->path, true);
@@ -385,7 +388,7 @@ bool tns_load(tns_t *tns, int n, bool force, bool cache_only)
 	if (cache_only) {
 		imlib_free_image_and_decache();
 	} else {
-		t->im = tns_scale_down(im, thumb_sizes[tns->zl]);
+		t->im = tns_scale_down(im, thumb_sizes[tns->zl], THUMB_H(tns));
 		imlib_context_set_image(t->im);
 		t->w = imlib_image_get_width();
 		t->h = imlib_image_get_height();
@@ -456,7 +459,7 @@ void tns_render(tns_t *tns)
 	imlib_context_set_drawable(win->buf.pm);
 
 	tns->cols = MAX(1, win->w / tns->dim);
-	tns->rows = MAX(1, win->h / tns->dim);
+	tns->rows = MAX(1, win->h / tns->dimh);
 
 	if (*tns->cnt < tns->cols * tns->rows) {
 		tns->first = 0;
@@ -471,7 +474,7 @@ void tns_render(tns_t *tns)
 	}
 	r = cnt % tns->cols ? 1 : 0;
 	tns->x = x = (win->w - MIN(cnt, tns->cols) * tns->dim) / 2 + tns->bw + 3;
-	tns->y = y = (win->h - (cnt / tns->cols + r) * tns->dim) / 2 + tns->bw + 3 +
+	tns->y = y = (win->h - (cnt / tns->cols + r) * tns->dimh) / 2 + tns->bw + 3 +
 	             (win->bar.top ? win->bar.h : 0);
 	tns->loadnext = *tns->cnt;
 	tns->end = tns->first + cnt;
@@ -487,7 +490,7 @@ void tns_render(tns_t *tns)
 		t = &tns->thumbs[i];
 		if (t->im != NULL) {
 			t->x = x + (thumb_sizes[tns->zl] - t->w) / 2;
-			t->y = y + (thumb_sizes[tns->zl] - t->h) / 2;
+			t->y = y + (THUMB_H(tns) - t->h) / 2;
 			imlib_context_set_image(t->im);
 			imlib_render_image_on_drawable_at_size(t->x, t->y, t->w, t->h);
 			if (tns->files[i].flags & FF_MARK)
@@ -497,7 +500,7 @@ void tns_render(tns_t *tns)
 		}
 		if ((i + 1) % tns->cols == 0) {
 			x = tns->x;
-			y += tns->dim;
+			y += tns->dimh;
 		} else {
 			x += tns->dim;
 		}
@@ -611,6 +614,7 @@ bool tns_zoom(tns_t *tns, int d)
 	tns->bw = ((thumb_sizes[tns->zl] - 1) >> 5) + 1;
 	tns->bw = MIN(tns->bw, 4);
 	tns->dim = thumb_sizes[tns->zl] + 2 * tns->bw + 6;
+	tns->dimh = THUMB_H(tns) + 2 * tns->bw + 6;
 
 	if (tns->zl != oldzl) {
 		for (i = 0; i < *tns->cnt; i++)
@@ -624,12 +628,12 @@ int tns_translate(tns_t *tns, int x, int y)
 {
 	int n;
 	int x_max = tns->x + tns->dim * tns->cols;
-	int y_max = tns->y + tns->dim * tns->rows;
+	int y_max = tns->y + tns->dimh * tns->rows;
 
 	if (x < tns->x || y < tns->y || x > x_max || y > y_max)
 		return -1;
 
-	n = tns->first + (y - tns->y) / tns->dim * tns->cols +
+	n = tns->first + (y - tns->y) / tns->dimh * tns->cols +
 	    (x - tns->x) / tns->dim;
 	if (n >= *tns->cnt)
 		n = -1;
